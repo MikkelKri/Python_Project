@@ -1,0 +1,41 @@
+#Inserting into a list
+for item in pubmedtmp:
+	if item[2] not in pubmeID:
+		pubmeID[item[2]]=item[1]
+	if item[2] in pubmeID:
+		pubmeID[item[2]]+=item[1]
+print(pubmeID)
+
+#Here i did it but only for print. Not assigned a list or dict.
+for item in pubmedtmp:
+	if item[2] not in pubmeID:
+		pubmeID[item[2]] = {}
+	if item[2] in pubmeID:
+		if pubmedtmp[n][2]==pubmedtmp[n-1][2]:
+			n+=1
+			print(item[1], ', ')
+		else:
+			print(item[2],':',item[1])
+			n+=1
+			continue
+print(list1)
+		#pubmeID[item[2]]=item[1]
+#print(pubmeID)
+
+#For appending it into a list
+for item in pubmedtmp:
+	if item[2] not in pubmeID:
+		pubmeID[item[2]] = {}
+	if item[2] in pubmeID:
+		if pubmedtmp[n][2]==pubmedtmp[n-1][2]:
+			n+=1
+			list1.append(item[1])
+		else:
+			list1.append(item[2])
+			list1.append(':')
+			list1.append(item[1])
+			n+=1
+			continue
+print(list1)
+		#pubmeID[item[2]]=item[1]
+#print(pubmeID)
