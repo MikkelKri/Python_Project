@@ -61,8 +61,8 @@ def sort_key(row):
 pubmedtmp.sort(key = sort_key)
 
 
-#Create Dict with gene ID
 pubdict = {}
+
 for item in pubmedtmp:
 	if item[1] not in pubdict:
 		pubdict[item[1]] = {}
@@ -71,8 +71,23 @@ for item in pubmedtmp:
 		#pubdict[item[1]].append(item[2])
 #print(pubdict)
 
+#inserting PubmeID into dict
+pubmeID={}
+for item in pubmedtmp:
+	if item[2] not in pubmeID:
+		pubmeID[item[2]] = {}
+#print(pubmeID)
 
-#Iterate through list and find matches
+pubmeID={}
+for item in pubmedtmp:
+	if item[2] not in pubmeID:
+		pubmeID[item[2]] = {}
+	if item[2] in pubmeID:
+
+
+for char in sorted(pubmeID.keys()):
+    print('{}: {:4d}'.format(pubmeID, counts[char]))
+
 n = 0
 for item in pubmedtmp[0:-1]:
 	if pubmedtmp[n][2] == pubmedtmp[n+1][2]:
@@ -82,12 +97,5 @@ for item in pubmedtmp[0:-1]:
 		n += 1
 		continue
 
+for k in pubdict.keys():
 
-
-'''
-for each 2nd item in each sublist, make a dict key. 
-
-for each list in the list of lists, if the 3rd item in that list matches the 3rd item in the next list
-Add the 2nd item as a subdict key to the first dict and add 1 as a value, if that item is already a subdict key, 
-Then add 1 to the value. 
-'''
