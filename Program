@@ -60,9 +60,8 @@ def sort_key(row):
     return row[2]
 pubmedtmp.sort(key = sort_key)
 
-
+#Creating the dict of gene names
 pubdict = {}
-
 for item in pubmedtmp:
 	if item[1] not in pubdict:
 		pubdict[item[1]] = {}
@@ -70,6 +69,8 @@ for item in pubmedtmp:
 		continue
 		#pubdict[item[1]].append(item[2])
 #print(pubdict)
+
+
 
 #inserting PubmeID into dict
 pubmeID={}
@@ -88,6 +89,7 @@ for item in pubmedtmp:
 for char in sorted(pubmeID.keys()):
     print('{}: {:4d}'.format(pubmeID, counts[char]))
 
+#temp code for testing equivalence in list of list
 n = 0
 for item in pubmedtmp[0:-1]:
 	if pubmedtmp[n][2] == pubmedtmp[n+1][2]:
