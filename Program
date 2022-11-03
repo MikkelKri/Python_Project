@@ -24,6 +24,7 @@
 #present which genes have the most connections?  Select from that?
 #maybe if a network has more than 50 genes get rid of the connections that are only mentioned once?
 
+#######################################################################################################################
 
 import sys
 
@@ -48,27 +49,46 @@ except IndexError:
 pubmedlist = open("gene2pubmed", 'r')
 #filter for the tax id in the first column
 
-#filter for the tax id in the first column
+#Load the gene and the pubmedID into a list
 pubmedtmp = []
+
 for line in pubmedlist:
 	if line.startswith(tax + "	"):
 		line = line.strip().split('\t')
-		pubmedtmp.append(line)
+		pubmedtmp.append(line[1:])
+
+#Convert the list into a dict, with pubmedID as the key and all the genes as values
+pubmedID_dict = {}
+for line in pubmedtmp:
+	if line[1] in pubmedID_dict:
+		pubmedID_dict[line[1]].append(int(line[0]))
+	else:
+		pubmedID_dict[line[1]] = [line[0]]
+		
+print(pubmedID_dict)
+
+
+#Creating the dict of gene names
+genedict = {}
+for item in pubmedtmp:
+	if item[1] not in genedict:
+		genedict[item[1]] = {}
+	else:
+		continue
+print(genedict)
+
+
+
+#########################################################
+Below these lines is extra code which may be useful
+#########################################################
+#########################################################
+
 
 #sort by the pubmed id
 def sort_key(row):
     return row[2]
 pubmedtmp.sort(key = sort_key)
-
-#Creating the dict of gene names
-pubdict = {}
-for item in pubmedtmp:
-	if item[1] not in pubdict:
-		pubdict[item[1]] = {}
-	else:
-		continue
-		#pubdict[item[1]].append(item[2])
-#print(pubdict)
 
 
 
