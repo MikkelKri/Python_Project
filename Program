@@ -1,1 +1,84 @@
-Print('Hello')
+
+#!/usr/bin/env python3
+
+#Open gene 2 pubmed
+#open geneinfo
+#Ask for a tax id
+	#check for error
+	
+#filter gene_info data for that tax id
+#filter gene2pubmed for that tax id
+#Save these two files as temporary filtering/selection files (Is this the efficient way)
+
+
+#Genes are linked if mentioned in the same pubmed article -- one exercise
+	#pubmed_article  gene_number  gene_name	description
+	#output for a network is .sif gene pp gene
+	#need additional output file for network description
+#The weight of gene linkage is calculated by the number of times the two genes are mentioned together - another exercise
+	#genename(pp)genename  confidence_score
+	#output for a score is .txt
+	
+	
+#The file for cytoscape needs to be further filtered.  
+#present which genes have the most connections?  Select from that?
+#maybe if a network has more than 50 genes get rid of the connections that are only mentioned once?
+
+
+import sys
+
+try:
+	tax = str(sys.argv[1])
+	print("The taxonomy id you have entered is: ", tax)
+	response = input("Is that correct? Please enter y or n: ")
+	if response.upper() == "Y":
+		print("Please be patient while we efficiently filter the database")
+	else:
+		print("Please start over and enter the correct tax id.")
+		sys.exit(1)
+		
+except ValueError:
+	print('You must supply one taxonomy id')
+	sys.exit(1)
+except IndexError:
+	print('You must supply one taxonomy id')
+	sys.exit(1)
+
+#filter
+pubmedlist = open("gene2pubmed", 'r')
+#filter for the tax id in the first column
+
+#filter for the tax id in the first column
+pubmedtmp = []
+for line in pubmedlist:
+	if line.startswith(tax + "	"):
+		line = line.strip().split('\t')
+		pubmedtmp.append(line)
+
+#sort by the pubmed id
+def sort_key(row):
+    return row[2]
+pubmedtmp.sort(key = sort_key)
+
+
+pubdict = {}
+
+for item in pubmedtmp:
+	if item[1] not in pubdict:
+		pubdict[item[1]] = {}
+	else:
+		continue
+		#pubdict[item[1]].append(item[2])
+#print(pubdict)
+
+
+n = 0
+for item in pubmedtmp[0:-1]:
+	if pubmedtmp[n][2] == pubmedtmp[n+1][2]:
+		print("true")
+		n += 1
+	else:
+		n += 1
+		continue
+
+for k in pubdict.keys():
