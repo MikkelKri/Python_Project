@@ -79,16 +79,6 @@ for item in pubmedtmp:
 		pubmeID[item[2]] = {}
 #print(pubmeID)
 
-pubmeID={}
-for item in pubmedtmp:
-	if item[2] not in pubmeID:
-		pubmeID[item[2]] = {}
-	if item[2] in pubmeID:
-
-
-for char in sorted(pubmeID.keys()):
-    print('{}: {:4d}'.format(pubmeID, counts[char]))
-
 #temp code for testing equivalence in list of list
 n = 0
 for item in pubmedtmp[0:-1]:
