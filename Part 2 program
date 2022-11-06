@@ -1,1 +1,17 @@
-
+#Hopefully get a dict which is sorted like (gene1, gene2): (pubmedID1, pubmedID2, pubmedID3).
+#Things to look for afterwards:
+  #Make some kind of table for cytoscape, consisting: pubmed_article  gene_number  gene_name	description?
+	  #output for a network is .sif gene pp gene
+  #The weight of the edge is the number of articles, which links both genes.
+    #Looking for every key example (gene1, gene2) and look for the values for that key - how many there is.
+      #From that we can make a file which consist of: genename(pp)genename  confidence_score
+	      #output for a score is .txt
+  #From that we can do some filtration of the file:
+    #A network with many connected nodes = many genes.
+    #Networks where the sum of the edges is high = many co-mentioning articles.
+    #High edge-sum/nodes = high importance of the network, many articles.
+    #Some nodes in the graph do not have any connecting edges = virgin territory or maybe uninteresting.
+    #Networks that consists of only few nodes where the connecting edges have low weights = not much research has been made.
+    #Networks that connect to a specific gene = an overview of a interaction network, maybe a biological process.
+    #Networks that has a specific gene as a center and has connections to the n'th degree (star shaped).
+    
