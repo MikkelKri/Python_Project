@@ -65,19 +65,32 @@ for line in pubmedtmp:
 	else:
 		pubmedID_dict[line[1]] = [line[0]]
 		
-print(pubmedID_dict)
+#removing all the pubmed key/value pairs if there is only one value (gene)
+keylist = list(pubmedID_dict.keys())
+for i in keylist:
+	if len(pubmedID_dict[i]) <2:
+		del	pubmedID_dict[i]
+			
+#print(pubmedID_dict)
 
+pairlist = []
+paperlist = []
+final_dict = {}
 
-#Creating the dict of gene names
-genedict = {}
-for item in pubmedtmp:
-	if item[1] not in genedict:
-		genedict[item[1]] = {}
+for kvpair in pubmedID_dict.items():
+	pre = ([sorted((kvpair[1][a], kvpair[1][b])) for a in range(len(kvpair[1])) for b in range(a+1, len(kvpair[1]))])
+	pairlist.append([tuple(k) for k in pre])
+	paperlist.append(kvpair[0])
+
+flatlist = [no for row in pairlist for no in row]
+for j in flatlist:
+	if j in final_dict:
+		final_dict[j] += 1
 	else:
-		continue
-print(genedict)
+		final_dict[j] = 1		
 
-
+print(final_dict)
+print(sum(final_dict.values()))
 
 #########################################################
 Below these lines is extra code which may be useful
