@@ -73,24 +73,41 @@ for i in keylist:
 			
 #print(pubmedID_dict)
 
+# This finds all the possible pairs of genes linked by articles
 pairlist = []
-paperlist = []
-final_dict = {}
+tuple_dict = {}
 
 for kvpair in pubmedID_dict.items():
 	pre = ([sorted((kvpair[1][a], kvpair[1][b])) for a in range(len(kvpair[1])) for b in range(a+1, len(kvpair[1]))])
 	pairlist.append([tuple(k) for k in pre])
-	paperlist.append(kvpair[0])
 
+#This converts the list of lists into a flat list of tuples
 flatlist = [no for row in pairlist for no in row]
-for j in flatlist:
-	if j in final_dict:
-		final_dict[j] += 1
-	else:
-		final_dict[j] = 1		
 
-print(final_dict)
-print(sum(final_dict.values()))
+#OPTION 1
+#This makes a dict of tuples and counts of article links - it's good for quickly seeing which PPI have the most links
+#We may not need this, we may just want the dict of dict
+for j in flatlist:
+	if j in tuple_dict:
+		tuple_dict[j] += 1
+	else:
+		tuple_dict[j] = 1	
+print(tuple_dict)
+
+
+#OPTION 2
+#This creates a dict of dict, it's probably better for finding the largest groups of protein-protein pairs.
+#We may want to use this because I think it will be easier to create cytoscape files from here
+PPIdict = {}
+for a,b in flatlist:
+	if a not in PPIdict:
+		PPIdict[a] = {}
+		PPIdict[a][b] = 1
+	elif b in PPIdict[a]:
+		PPIdict[a][b] += 1
+	else:
+		PPIdict[a][b] = 1
+print(PPIdict)
 
 #########################################################
 Below these lines is extra code which may be useful
