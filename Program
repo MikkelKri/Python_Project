@@ -63,7 +63,7 @@ for line in pubmedtmp:
 	if line[1] in pubmedID_dict:
 		pubmedID_dict[line[1]].append(int(line[0]))
 	else:
-		pubmedID_dict[line[1]] = [line[0]]
+		pubmedID_dict[line[1]] = [int(line[0])]
 		
 #removing all the pubmed key/value pairs if there is only one value (gene)
 keylist = list(pubmedID_dict.keys())
