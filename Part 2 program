@@ -15,6 +15,31 @@
     #Networks that connect to a specific gene = an overview of a interaction network, maybe a biological process.
     #Networks that has a specific gene as a center and has connections to the n'th degree (star shaped).
 
+#START PROGRAM:
+try:
+    tax = str(sys.argv[1])
+    print("The taxonomy id you have entered is:", tax)
+    response = input("Is that correct? Please enter y or n: ")
+    while response.upper() != "Y":
+        tax =input('Please enter your taxonomy again: ')
+        print("The taxonomy id you have entered is: ", tax)
+        response = input("Is that correct? Please enter y or n: ")        
+    print("Please be patient while we efficiently filter the database")
+        
+except ValueError:
+    tax=input('You must supply one taxonomy id')
+    print("The taxonomy id you have entered is: ", tax)
+    response = input("Is that correct? Please enter y or n: ")
+    if response.upper() == "Y":
+        print("Please be patient while we efficiently filter the database")
+except IndexError:
+    tax=input('You must supply one taxonomy id')
+    response = input("Is that correct? Please enter y or n: ")
+    if response.upper() == "Y":
+        print("Please be patient while we efficiently filter the database")
+print(tax)
+
+
 #GETTING CONFIDENCE SCORE
 def confidence_score(genes):
 	number=0
