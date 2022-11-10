@@ -14,7 +14,8 @@
     #Networks that consists of only few nodes where the connecting edges have low weights = not much research has been made.
     #Networks that connect to a specific gene = an overview of a interaction network, maybe a biological process.
     #Networks that has a specific gene as a center and has connections to the n'th degree (star shaped).
-    
+
+#GETTING CONFIDENCE SCORE
 def confidence_score(genes):
 	number=0
 	confidence_score=0
@@ -31,3 +32,9 @@ def confidence_score(genes):
     	print(keyList[i][0],"\t","pp","\t",keyList[i][0],"\t",confidence_score)
         confidence_score=0
 mean(accNum)
+
+
+#EXTRACTING GENE NAMES.
+infile=open('gene_info','r')
+for line in infile:
+	
