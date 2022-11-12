@@ -109,6 +109,31 @@ for a,b in flatlist:
 		PPIdict[a][b] = 1
 print(PPIdict)
 
+#FILTRATION OF GENE
+infile= open("gene_info", 'r')
+pubmedtmp=[]
+#filter for the tax id in the first column
+for line in infile:
+    if line.startswith(tax):
+        line = line.strip().split('\t')
+        pubmedtmp.append(line)
+
+n=0
+for i in range(len(pubmedtmp)):
+    if len(pubmedtmp[i][0])!=len(tax):
+        pubmedtmp[i].clear()
+        n+=1
+geneName=dict()
+for i in range(len(pubmedtmp)-n):
+    if pubmedtmp[i][1] in geneName:
+        geneName[pubmedtmp[i][1]]+=pubmedtmp[i][3]
+    if pubmedtmp[i][1] not in geneName:
+        geneName[pubmedtmp[i][1]]=pubmedtmp[i][3]
+
+print(geneName)
+
+
+
 #########################################################
 Below these lines is extra code which may be useful
 #########################################################
