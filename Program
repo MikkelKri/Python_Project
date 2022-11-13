@@ -109,7 +109,9 @@ for a,b in flatlist:
 		PPIdict[a][b] = 1
 print(PPIdict)
 
-sorted_dict = dict(sorted(PPIdict.items(), key=lambda kv:len(kv[1]), reverse = True)))
+sorted_dict = dict(sorted(PPIdict.items(), key=lambda kv:len(kv[1]), reverse = True))
+
+print(sorted_dict)
 
 #FILTRATION OF GENE
 infile= open("gene_info", 'r')
