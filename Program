@@ -112,10 +112,14 @@ print(PPIdict)
 sorted_dict = dict(sorted(PPIdict.items(), key=lambda kv:len(kv[1]), reverse = True))
 
 print(sorted_dict)
-
+########### MATT TO FILTER ##########
 #show network with most nodes - length of subdict - maybe selectable based on order, 1st, 2nd, 3rd, etc. 
 #Show network with highest score - sum of subdict values
 #show most studied network pair - highest subdict value
+
+############# MIKKEL TO BUILD USER FILTER INPUT ####################
+
+############ MIKKEL TO TURN OUTPUT INTO CYTOSCAPE FILES #############
 
 
 #FILTRATION OF GENE
