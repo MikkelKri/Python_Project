@@ -113,6 +113,11 @@ sorted_dict = dict(sorted(PPIdict.items(), key=lambda kv:len(kv[1]), reverse = T
 
 print(sorted_dict)
 
+#show network with most nodes - length of subdict - maybe selectable based on order, 1st, 2nd, 3rd, etc. 
+#Show network with highest score - sum of subdict values
+#show most studied network pair - highest subdict value
+
+
 #FILTRATION OF GENE
 infile= open("gene_info", 'r')
 pubmedtmp=[]
