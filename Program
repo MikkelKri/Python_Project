@@ -102,28 +102,43 @@ for a,b in flatlist:
 	if a not in PPIdict:
 		PPIdict[a] = {}
 		PPIdict[a][b] = 1
+	elif b not in PPIdict:
+		PPIdict[b] = {}
+		PPIdict[b][a] = 1
+
 	elif b in PPIdict[a]:
 		PPIdict[a][b] += 1
+	elif a in PPIdict[b]:
+		PPIdict[b][a] += 1
 	else:
 		PPIdict[a][b] = 1
+		PPIdict[b][a] = 1
+
 print(PPIdict)
+
+print('\n')
+print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
 #Prints top 5 items in sorted dict by number of connections
 sorted_dict = dict(sorted(PPIdict.items(), key=lambda kv:len(kv[1]), reverse = True))
 print(list(sorted_dict.items())[0:5])
 
+print('\n')
+print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
-#Show most studied gene
 #sum of values within values of a nested dict
 def find_max_articles(PPIdict):
     most_articles = {}
     for prikey, seckey in PPIdict.items():
         for key, article_count in seckey.items():
-            most_articles[key] = most_articles.get(key, 0) + article_count
+            most_articles[key] = most_articles.get(key, 1) + article_count
     highest_score = max(most_articles, key=most_articles.get)
     return highest_score, most_articles[highest_score]
     
 print (find_max_articles(PPIdict))
+
+top_gene = find_max_articles(PPIdict)[0]
+print(PPIdict[top_gene])
 
 #show most studied network pair - highest subdict value
 
