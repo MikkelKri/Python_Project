@@ -84,6 +84,7 @@ for kvpair in pubmedID_dict.items():
 #This converts the list of lists into a flat list of tuples
 flatlist = [no for row in pairlist for no in row]
 
+'''
 #OPTION 1
 #This makes a dict of tuples and counts of article links - it's good for quickly seeing which PPI have the most links
 #We may not need this, we may just want the dict of dict
@@ -93,11 +94,9 @@ for j in flatlist:
 	else:
 		tuple_dict[j] = 1	
 print(tuple_dict)
+'''
 
-
-#OPTION 2
-#This creates a dict of dict, it's probably better for finding the largest groups of protein-protein pairs.
-#We may want to use this because I think it will be easier to create cytoscape files from here
+#OPTION 2 - dict of dict
 PPIdict = {}
 for a,b in flatlist:
 	if a not in PPIdict:
@@ -109,12 +108,23 @@ for a,b in flatlist:
 		PPIdict[a][b] = 1
 print(PPIdict)
 
+#Prints top 5 items in sorted dict by number of connections
 sorted_dict = dict(sorted(PPIdict.items(), key=lambda kv:len(kv[1]), reverse = True))
+print(list(sorted_dict.items())[0:5])
 
-print(sorted_dict)
-########### MATT TO FILTER ##########
-#show network with most nodes - length of subdict - maybe selectable based on order, 1st, 2nd, 3rd, etc. 
-#Show network with highest score - sum of subdict values
+
+#Show most studied gene
+#sum of values within values of a nested dict
+def find_max_articles(PPIdict):
+    most_articles = {}
+    for prikey, seckey in PPIdict.items():
+        for key, article_count in seckey.items():
+            most_articles[key] = most_articles.get(key, 0) + article_count
+    highest_score = max(most_articles, key=most_articles.get)
+    return highest_score, most_articles[highest_score]
+    
+print (find_max_articles(PPIdict))
+
 #show most studied network pair - highest subdict value
 
 ############# MIKKEL TO BUILD USER FILTER INPUT ####################
