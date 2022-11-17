@@ -57,6 +57,10 @@ for line in pubmedlist:
 		line = line.strip().split('\t')
 		pubmedtmp.append(line[1:])
 
+if len(pubmedtmp) == 0:
+	print("That Taxonomy ID was not found, try another.")
+	sys.exit(1)
+
 #Convert the list into a dict, with pubmedID as the key and all the genes as values
 pubmedID_dict = {}
 for line in pubmedtmp:
