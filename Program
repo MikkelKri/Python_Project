@@ -84,17 +84,16 @@ for kvpair in pubmedID_dict.items():
 #This converts the list of lists into a flat list of tuples
 flatlist = [no for row in pairlist for no in row]
 
-'''
-#OPTION 1
+
+#NEEDED FOR COUNT
 #This makes a dict of tuples and counts of article links - it's good for quickly seeing which PPI have the most links
-#We may not need this, we may just want the dict of dict
 for j in flatlist:
 	if j in tuple_dict:
 		tuple_dict[j] += 1
 	else:
 		tuple_dict[j] = 1	
 print(tuple_dict)
-'''
+
 
 #OPTION 2 - dict of dict
 PPIdict = {}
@@ -128,17 +127,20 @@ print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
 #sum of values within values of a nested dict
 def find_max_articles(PPIdict):
-    most_articles = {}
-    for prikey, seckey in PPIdict.items():
-        for key, article_count in seckey.items():
-            most_articles[key] = most_articles.get(key, 1) + article_count
-    highest_score = max(most_articles, key=most_articles.get)
-    return highest_score, most_articles[highest_score]
+	most_articles = {}
+	for prikey, seckey in PPIdict.items():
+		for key, article_count in seckey.items():
+			most_articles[key] = most_articles.get(key,0) + article_count
+	highest_score = max(most_articles, key=most_articles.get)
+	return highest_score, most_articles[highest_score]
     
-print (find_max_articles(PPIdict))
+print (find_max_articles(PPIdict)[0])
 
 top_gene = find_max_articles(PPIdict)[0]
-print(PPIdict[top_gene])
+#print(tuple_dict[top_gene])
+lst1 = [v for (k1, _), v in tuple_dict.items() if k1 == top_gene]
+lst2 = [v for (_, k2), v in tuple_dict.items() if k2 == top_gene]
+print(sum(lst1)+sum(lst2))
 
 #show most studied network pair - highest subdict value
 
