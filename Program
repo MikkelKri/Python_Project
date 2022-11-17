@@ -116,14 +116,14 @@ for a,b in flatlist:
 #print(PPIdict)
 
 print('\n')
-print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+print("^^^^^^^^^TOP 5 NETWORKS BY NETWORK LENGTH^^^^^^^^^^^")
 
 #Prints top 5 items in sorted dict by number of connections
 sorted_dict = dict(sorted(PPIdict.items(), key=lambda kv:len(kv[1]), reverse = True))
 print(list(sorted_dict.items())[0:5])
 
 print('\n')
-print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+print("^^^^^^^^^TOP GENE BY NUMBER OF LINKS TO OTHER GENE^^^^^^^^^^^^^^")
 
 #sum of values within values of a nested dict
 def find_max_articles(PPIdict):
