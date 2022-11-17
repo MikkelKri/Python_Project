@@ -92,7 +92,7 @@ for j in flatlist:
 		tuple_dict[j] += 1
 	else:
 		tuple_dict[j] = 1	
-print(tuple_dict)
+#print(tuple_dict)
 
 
 #OPTION 2 - dict of dict
@@ -113,7 +113,7 @@ for a,b in flatlist:
 		PPIdict[a][b] = 1
 		PPIdict[b][a] = 1
 
-print(PPIdict)
+#print(PPIdict)
 
 print('\n')
 print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
