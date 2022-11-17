@@ -122,6 +122,8 @@ print("^^^^^^^^^TOP 5 NETWORKS BY NETWORK LENGTH^^^^^^^^^^^")
 sorted_dict = dict(sorted(PPIdict.items(), key=lambda kv:len(kv[1]), reverse = True))
 print(list(sorted_dict.items())[0:5])
 
+########Matt to save ^ as a txt file in the format above
+
 print('\n')
 print("^^^^^^^^^TOP GENE BY NUMBER OF LINKS TO OTHER GENE^^^^^^^^^^^^^^")
 
