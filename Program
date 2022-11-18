@@ -129,7 +129,7 @@ print(list(sorted_dict.items())[0:5])
 ########Matt to save ^ as a txt file in the format above
 
 print('\n')
-print("^^^^^^^^^TOP GENE BY NUMBER OF LINKS TO OTHER GENE^^^^^^^^^^^^^^")
+print("^^^^^^^^^TOP GENE BY NUMBER OF LINKS TO OTHER GENE^^^^^^^^^^^^^^","\n","^^^^^^^^PRINT 5 LARGEST NETWORKS FOR THIS TOP GENE^^^^^^^^^^^^^")
 
 #sum of values within values of a nested dict
 def find_max_articles(PPIdict):
@@ -148,7 +148,16 @@ lst1 = [v for (k1, _), v in tuple_dict.items() if k1 == top_gene]
 lst2 = [v for (_, k2), v in tuple_dict.items() if k2 == top_gene]
 print(sum(lst1)+sum(lst2))
 
-#show most studied network pair - highest subdict value
+
+top_gene_dict = {}
+keys = [x for x, y in PPIdict.items() if top_gene in y]
+for k,v in PPIdict.items():
+	if k in keys or k == top_gene:
+		top_gene_dict[k] = [v]
+#print(top_gene_dict)
+
+top_gene_sorted_dict = dict(sorted(top_gene_dict.items(), key=lambda kv:len(kv[1]), reverse = True))
+print(list(top_gene_sorted_dict.items())[0:5])
 
 ############# MIKKEL TO BUILD USER FILTER INPUT ####################
 
