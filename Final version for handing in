@@ -1,5 +1,46 @@
 #!/usr/bin/env python3
 
+#PSEUDOCODE FOR STEP 1
+
+#Open gene 2 pubmed
+#open geneinfo
+#Have the user open the program and input a tax id
+	#save this tax ID as a variable
+	#check for error
+
+#filter gene_info data for that tax id
+	#If the line starts with the tax id variable, strip/split the line
+	#Save this filtered info into a temporary list (potential for optimization, reading directly to dict)
+	#If the length of this list is zero, return an error stating that the tax ID wasn't found
+	
+#Convert the list into a dict, with pubmedID as the key and all the genes linked to that ID as values
+	#Reduce the size of this dict by deleting all key/value pairs with only one value
+	
+#The central algorithm then iterates through each key/value pair and creates all unique combinations of values
+	#for each value in each key/value dict group return a tuple where the first item is the "i'th" item in the 
+	#value set and the second item is the "i+1'th" item in the value set. By iterating 
+	#through the whole value set in this ordered fashion we will create all combinations of unique 
+	#gene/gene pairs linked to each article - this is saved as a list of tuples. We eventually 
+	#flatten the structure into a single list of tuples. 
+	
+#We will convert this flat list of tuples into a dict that summarizes, for each tuple pair, 
+	#how many times it occurs. This structure is useful for quickly seeing which gene pairs are 
+	#linked most often. We will use this structure to return the gene that is linked ("mentioned") 
+	#most often with other genes.  Additionally, we can return the 5 largest networks associated with this gene
+	#{(GeneA,GeneB): count of occurrences}
+
+#We can also now create our desired dict of dict structure
+	#Gene1 : {Gene2: count of Gene1/Gene2 article links, GeneN: count of Gene1/GeneN article links…}}
+	#We can sort and filter the dict of dict to show the top 5 genes with the most number of 
+	#gene links, i.e. the largest networks
+
+#####################################################################################################################
+	
+
+
+#######################################################################################################################
+
+
 import sys
 
 try:
@@ -59,7 +100,6 @@ for kvpair in pubmedID_dict.items():
 flatlist = [no for row in pairlist for no in row]
 
 
-#NEEDED FOR COUNT
 #This makes a dict of tuples and counts of article links - it's good for quickly seeing which PPI have the most links
 for j in flatlist:
 	if j in tuple_dict:
