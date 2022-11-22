@@ -1,0 +1,221 @@
+#!/usr/bin/env python3
+
+import sys
+
+try:
+	tax = str(sys.argv[1])
+	print("The taxonomy id you have entered is: ", tax)
+	response = input("Is that correct? Please enter y or n: ")
+	if response.upper() == "Y":
+		print("Please be patient while we efficiently filter the database")
+	else:
+		print("Please start over and enter the correct tax id.")
+		sys.exit(1)
+		
+except ValueError:
+	print('You must supply one taxonomy id')
+	sys.exit(1)
+except IndexError:
+	print('You must supply one taxonomy id')
+	sys.exit(1)
+
+#filter
+pubmedlist = open("gene2pubmed", 'r')
+#filter for the tax id in the first column
+
+#Load the gene and the pubmedID into a list
+pubmedtmp = []
+
+for line in pubmedlist:
+	if line.startswith(tax + "	"):
+		line = line.strip().split('\t')
+		pubmedtmp.append(line[1:])
+
+#Convert the list into a dict, with pubmedID as the key and all the genes as values
+pubmedID_dict = {}
+for line in pubmedtmp:
+	if line[1] in pubmedID_dict:
+		pubmedID_dict[line[1]].append(int(line[0]))
+	else:
+		pubmedID_dict[line[1]] = [int(line[0])]
+		
+#removing all the pubmed key/value pairs if there is only one value (gene)
+keylist = list(pubmedID_dict.keys())
+for i in keylist:
+	if len(pubmedID_dict[i]) <2:
+		del	pubmedID_dict[i]
+			
+#print(pubmedID_dict)
+
+# This finds all the possible pairs of genes linked by articles
+pairlist = []
+tuple_dict = {}
+
+for kvpair in pubmedID_dict.items():
+	pre = ([sorted((kvpair[1][a], kvpair[1][b])) for a in range(len(kvpair[1])) for b in range(a+1, len(kvpair[1]))])
+	pairlist.append([tuple(k) for k in pre])
+
+#This converts the list of lists into a flat list of tuples
+flatlist = [no for row in pairlist for no in row]
+
+
+#NEEDED FOR COUNT
+#This makes a dict of tuples and counts of article links - it's good for quickly seeing which PPI have the most links
+for j in flatlist:
+	if j in tuple_dict:
+		tuple_dict[j] += 1
+	else:
+		tuple_dict[j] = 1	
+#print(tuple_dict)
+
+
+#OPTION 2 - dict of dict
+PPIdict = {}
+for a,b in flatlist:
+	if a not in PPIdict:
+		PPIdict[a] = {}
+		PPIdict[a][b] = 1
+	elif b not in PPIdict:
+		PPIdict[b] = {}
+		PPIdict[b][a] = 1
+
+	elif b in PPIdict[a]:
+		PPIdict[a][b] += 1
+	elif a in PPIdict[b]:
+		PPIdict[b][a] += 1
+	else:
+		PPIdict[a][b] = 1
+		PPIdict[b][a] = 1
+
+#print(PPIdict)
+
+#print('\n')
+#print("^^^^^^^^^TOP GENE BY NUMBER OF LINKS TO OTHER GENE^^^^^^^^^^^^^^")
+
+#sum of values within values of a nested dict
+def find_max_articles(PPIdict):
+	most_articles = {}
+	for prikey, seckey in PPIdict.items():
+		for key, article_count in seckey.items():
+			most_articles[key] = most_articles.get(key,0) + article_count
+	highest_score = max(most_articles, key=most_articles.get)
+	return highest_score, most_articles[highest_score]
+    
+#print(find_max_articles(PPIdict)[0])
+
+#FILTRATION OF GENE
+infile= open("gene_info", 'r')
+pubmedtmp=[]
+#filter for the tax id in the first column
+for line in infile:
+    if line.startswith(tax):
+        line = line.strip().split('\t')
+        pubmedtmp.append(line)
+
+n=0
+for i in range(len(pubmedtmp)):
+    if len(pubmedtmp[i][0])!=len(tax):
+        pubmedtmp[i].clear()
+        n+=1
+geneName=dict()
+for i in range(len(pubmedtmp)-n):
+    if pubmedtmp[i][1] in geneName:
+        geneName[pubmedtmp[i][1]]+=pubmedtmp[i][2]
+    if pubmedtmp[i][1] not in geneName:
+        geneName[pubmedtmp[i][1]]=pubmedtmp[i][2]
+
+
+#USER INPUT:
+print("That's perfect! The database have been filtered for taxID:",tax)
+print("Further filtration needs to be done for Cytoscape to handle the network")
+userInput=input(str("Choose by the following: \n 1.Show network with most nodes \n 2.Show network with highest score \n Number 1 or 2?:"))
+while userInput!="1" and userInput!="2":
+	userInput=input(str("Choose by the following: \n 1.Show network with most nodes \n 2.Show network with highest score \n Number 1 or 2:"))
+if userInput=="1":
+	#print('\n')
+	#print("^^^^^^^^^TOP 5 NETWORKS BY NETWORK LENGTH^^^^^^^^^^^")
+	#Prints top 5 items in sorted dict by number of connections
+	sorted_dict = dict(sorted(PPIdict.items(), key=lambda kv:len(kv[1]), reverse = True))
+	mostNodes=list(sorted_dict.items())[0:5]
+	Top5Filter=input(str("We filtered the top 5 networks for you. Do you want to see all of the networks or one from 1 to 5:"))
+	while Top5Filter!="1" and Top5Filter!="2" and Top5Filter!="3" and Top5Filter!="4" and Top5Filter!="5" and Top5Filter!="all":
+		Top5Filter=input(str("Please try again. Type all,1,2,3,4 or 5 depending of which network you will like to see:"))
+	if Top5Filter=="all":
+		GeneID=list()
+		ConnectedGenes=list()
+		MatchingScore=list()
+		for i in range(len(mostNodes)):
+			GeneID.append(mostNodes[i][0])
+			ConnectedGenes+=list(mostNodes[i][1].keys())
+			MatchingScore+=list(mostNodes[i][1].values())
+		n=0
+		print("Edge\tScore")
+		for i in range(len(GeneID)):
+			for char in range(n,(len(mostNodes[i][1].keys())+n)):
+				print(geneName[str(GeneID[i])],"\tpp\t",geneName[str(ConnectedGenes[char])],"\t",MatchingScore[char])
+			n+=len(mostNodes[i][1].keys())
+
+	else:
+		SpecifyMostNodes=mostNodes[int(Top5Filter)-1]
+		ConnectedGenes=SpecifyMostNodes[1]
+		keyList=list(ConnectedGenes.keys())
+		valueList=list(ConnectedGenes.values())
+		#THE GENE WITH MOST CONNECTION
+		value=geneName[str(SpecifyMostNodes[0])]
+		print("Edge\tScore")
+		for i in range(len(keyList)):
+			print((value),"\tpp\t",geneName[str(keyList[i])],"\t",valueList[i])
+			
+elif userInput=="2":
+	list1=list()
+	#CODE FOR FILTER
+	top_gene = find_max_articles(PPIdict)[0]
+	#print(tuple_dict[top_gene])
+	lst1 = [v for (k1, _), v in tuple_dict.items() if k1 == top_gene]
+	lst2 = [v for (_, k2), v in tuple_dict.items() if k2 == top_gene]
+
+	top_gene_dict = {}
+	keys = [x for x, y in PPIdict.items() if top_gene in y]
+	for k,v in PPIdict.items():
+		if k in keys or k == top_gene:
+			top_gene_dict[k] = [v]
+	#print(top_gene_dict)
+
+	top_gene_sorted_dict = dict(sorted(top_gene_dict.items(), key=lambda kv:len(kv[1]), reverse = True))
+	#print(top_gene_sorted_dict)
+
+	keyList=list(top_gene_sorted_dict.keys())
+	valueList=list(top_gene_sorted_dict.values())
+	GeneID=list()
+	GeneScore=list()
+	for i in range(len(valueList)):
+		GeneID+=list((valueList[i][0].keys()))
+		GeneScore+=list((valueList[i][0].values()))
+	print("The top gene is:",geneName[str(top_gene)],"and is mentioned with other genes",sum(lst1)+sum(lst2),"times")
+	userInput=input(str("Do you want to:\n 1.See five largest networks where the top gene has the highest confidence score\n 2.Only show the related genes to the top gene\nNumber 1 or 2:"))
+	while userInput!="1" and userInput!="2":
+		userInput=input(str("Please try again. Type 1 or 2. 1 all five networks and 2 for only connected genes to top gene:"))
+
+	if userInput=="1":
+		n=0
+		print("Edge\tScore")
+		for i in range(len(valueList)):
+			for char in range(n,(len(valueList[i][0].keys())+n)):
+				print(geneName[str(keyList[i])],"\tpp\t",geneName[str(GeneID[char])],"\t",GeneScore[char])
+			n+=len(valueList[i][0].keys())
+	else:
+		n=0
+		print("Edge\tScore")
+		for i in range(len(valueList)):
+			for char in range(n,(len(valueList[i][0].keys())+n)):
+				if keyList[i]==top_gene:
+					print(geneName[str(keyList[i])],"\tpp\t",geneName[str(GeneID[char])],"\t",GeneScore[char])
+				elif GeneID[char]==top_gene:
+					print(geneName[str(keyList[i])],"\tpp\t",geneName[str(GeneID[char])],"\t",GeneScore[char])
+			n+=len(valueList[i][0].keys())
+
+
+
+
+
+
