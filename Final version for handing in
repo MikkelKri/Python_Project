@@ -34,6 +34,38 @@
 	#We can sort and filter the dict of dict to show the top 5 genes with the most number of 
 	#gene links, i.e. the largest networks
 
+
+#PSEUDOCODE FOR STEP 2
+#We want for further use converting all the GeneID's to GeneNames. We are using the file gene_info for that
+	#If the line starts with the typed in tax_id, the whole line will be sat into a list.
+	#We then have a large list we can loop through. We make a empty dict and looking if GeneID is in the dict
+	#If not the GeneID is already in the dict, it will be placed there as key with the corresponding GeneName as value
+
+#For further filtration and what exactly should be in the output file. We want some usedInputs to decide
+#Option 1: Top 5 genes with the most number of gene links
+	#Further options is been made avaible here.
+	#Option 1.1: To choose to see all 5 genes including their individually network
+		#With a for loop we get three lists. One with GeneID, one with ConnedGenes and one with confidence score
+		#With three lists we want the output files. We want to make a for loop in a for loop.
+		#To first write the first gene with all its related genes. Then second gene with all related genes and etc.
+		#To be able to track the genes respectively related genes. We make a variable which has the length of the related genes for the speciic gene
+		#So everytime our first loop has run our second loop in that loop shifts with the length of the previous related genes.
+	#Option 1.2: To choose and show between the top 5 largest genes 1 to 5
+		#Take the network in the list that the user have typed in
+		#We want to have a list with connected genes, another one with confidence score and a string with the top gene
+		#We want to make a for loop where the top gene is the same and then looping throught the two list with related genes and score
+#Option 2: Show gene with highest score/most linked
+	#Further options is been made avaible here
+	#Option 2.1: Choose to show all networks, sorted after where the top gene has highest score.
+		#The method should follow as option 1.1. Has three list: GeneID, ConnectedGenes and Confidence score
+		#A for loop in a for loop and follow the method and thought as in option 1.1
+	#Option 2.2: Choose to only show all related genes for the top gene
+		#Follow the same thoughts as option 2.1 to loop through the three lists
+		#Instead of before where writing in the output file for all related network for top gene.
+		#Including other related genes for that network. Now we thought only to write in output file
+		#For the related genes for the top gene and therefore not other relation between different genes.
+		#So only if the gene as key is top gene in dict will we write all that networks related gene 
+		#Or if the top gene is the value we will only write the related gene for top gene/key in dict for that network
 #####################################################################################################################
 	
 
@@ -165,15 +197,15 @@ infile= open("gene_info", 'r')
 pubmedtmp=[]
 #filter for the tax id in the first column
 for line in infile:
-    if line.startswith(tax):
+    if line.startswith(tax+"	"):
         line = line.strip().split('\t')
         pubmedtmp.append(line)
 
-n=0
-for i in range(len(pubmedtmp)):
-    if len(pubmedtmp[i][0])!=len(tax):
-        pubmedtmp[i].clear()
-        n+=1
+#n=0
+#for i in range(len(pubmedtmp)):
+    #if len(pubmedtmp[i][0])!=len(tax):
+        #pubmedtmp[i].clear()
+        #n+=1
 geneName=dict()
 for i in range(len(pubmedtmp)-n):
     if pubmedtmp[i][1] in geneName:
