@@ -60,19 +60,22 @@ except IndexError:
 	print('You must supply one taxonomy id')
 	sys.exit(1)
 
-#filter
+#Establish variables for filtering
 pubmedlist = open("gene2pubmed", 'r')
-#filter for the tax id in the first column
-
-#Load the gene and the pubmedID into a list
 pubmedtmp = []
 
+#filter for the tax id in the first column
+#Load the gene and the pubmedID into a list
+#Big O: O(n+1) ~ O(n) - The run time scales linearly with the number of lines based on the for loop. 
+#If acts as one operation, split and append as part of that operation, they are constants.
 for line in pubmedlist:
 	if line.startswith(tax + "	"):
 		line = line.strip().split('\t')
 		pubmedtmp.append(line[1:])
 
+		
 #Convert the list into a dict, with pubmedID as the key and all the genes as values
+#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop, if/else acts as 1 operation on each line
 pubmedID_dict = {}
 for line in pubmedtmp:
 	if line[1] in pubmedID_dict:
@@ -81,26 +84,38 @@ for line in pubmedtmp:
 		pubmedID_dict[line[1]] = [int(line[0])]
 		
 #removing all the pubmed key/value pairs if there is only one value (gene)
+#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop, if/else acts as 1 operation on each line
 keylist = list(pubmedID_dict.keys())
 for i in keylist:
 	if len(pubmedID_dict[i]) <2:
 		del	pubmedID_dict[i]
 			
-#print(pubmedID_dict)
 
-# This finds all the possible pairs of genes linked by articles
+
+#Establish empy list for central algorithm
 pairlist = []
-tuple_dict = {}
 
+#Big O: O(n * (n*(n-1)/2) + n) ~ O(n * n^2 + n) ~ O(n^3)  This is the bottleneck in terms of speed
+#The for loop scales linearly, creating unique pairs scales as a second order polynomial as it's
+#A nested for loop, the append ooperation scales linearly, but is only operating on the output of the 
+#unique pair algorithm so we are adding n to big O, which cancels out.
+
+#for each value in each key/value dict group return a tuple where the first item is the "i'th" item in the value set 
+#and the second item is the "i+1'th" item in the value set. This finds all the possible pairs of genes linked by articles
 for kvpair in pubmedID_dict.items():
 	pre = ([(kvpair[1][a], kvpair[1][b]) for a in range(len(kvpair[1])) for b in range(a+1, len(kvpair[1]))])
 	pairlist.append([tuple(k) for k in pre])
 
+
+
 #This converts the list of lists into a flat list of tuples
+#Big O: O(n*n) ~ O(n^2) - Run time scales quadratically with n
 flatlist = [no for row in pairlist for no in row]
 
 
 #This makes a dict of tuples and counts of article links - it's good for quickly seeing which PPI have the most links
+#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop, if/else acts as 1 operation on each line
+tuple_dict = {}
 for j in flatlist:
 	if j in tuple_dict:
 		tuple_dict[j] += 1
@@ -109,8 +124,9 @@ for j in flatlist:
 #print(tuple_dict)
 
 
-#OPTION 2 - dict of dict
+#Protein-Protein Interaction dict of dict
 PPIdict = {}
+#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop, if/else acts as 1 operation on each line
 for a,b in flatlist:
 	if a not in PPIdict:
 		PPIdict[a] = {}
@@ -133,6 +149,7 @@ for a,b in flatlist:
 #print("^^^^^^^^^TOP GENE BY NUMBER OF LINKS TO OTHER GENE^^^^^^^^^^^^^^")
 
 #sum of values within values of a nested dict
+#Big O: O(n * n + 1 + 1) ~ O(n^2)
 def find_max_articles(PPIdict):
 	most_articles = {}
 	for prikey, seckey in PPIdict.items():
@@ -175,6 +192,10 @@ if userInput=="1":
 	#print('\n')
 	#print("^^^^^^^^^TOP 5 NETWORKS BY NETWORK LENGTH^^^^^^^^^^^")
 	#Prints top 5 items in sorted dict by number of connections
+	#Big O: O(n*log(n))
+	#Based on binary search and the halvings that occur as the search is refined there is a log*n relationship
+	#for the halvings, however we perform this operation n time for given the dict length. 
+	#Prints top 5 items in sorted dict by number of connections
 	sorted_dict = dict(sorted(PPIdict.items(), key=lambda kv:len(kv[1]), reverse = True))
 	mostNodes=list(sorted_dict.items())[0:5]
 	Top5Filter=input(str("We filtered the top 5 networks for you. Do you want to see all of the networks or one from 1 to 5:"))
@@ -211,16 +232,22 @@ elif userInput=="2":
 	#CODE FOR FILTER
 	top_gene = find_max_articles(PPIdict)[0]
 	#print(tuple_dict[top_gene])
+	#Big O: O(n+1) ~ O(n)
 	lst1 = [v for (k1, _), v in tuple_dict.items() if k1 == top_gene]
+	#Big O: O(n+1) ~ O(n)
 	lst2 = [v for (_, k2), v in tuple_dict.items() if k2 == top_gene]
 
 	top_gene_dict = {}
+	#Big O: O(n+1) ~ O(n)
 	keys = [x for x, y in PPIdict.items() if top_gene in y]
+	#Big O: O(n+1) ~ O(n)
 	for k,v in PPIdict.items():
 		if k in keys or k == top_gene:
 			top_gene_dict[k] = [v]
 	#print(top_gene_dict)
-
+	#Big O: O(n*log(n))
+	#Based on binary search and the halvings that occur as the search is refined there is a log*n relationship
+	#for the halvings, however we perform this operation n time for given the dict length.
 	top_gene_sorted_dict = dict(sorted(top_gene_dict.items(), key=lambda kv:len(kv[1]), reverse = True))
 	#print(top_gene_sorted_dict)
 
