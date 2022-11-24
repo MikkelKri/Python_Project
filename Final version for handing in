@@ -141,7 +141,7 @@ for kvpair in pubmedID_dict.items():
 
 
 #This converts the list of lists into a flat list of tuples
-#Big O: O(n*n) ~ O(n^2) - Run time scales quadratically with n
+#Big O: O(n*n) ~ O(n^2) - Run time scales quadratically with n - evident by the double for loop
 flatlist = [no for row in pairlist for no in row]
 
 
@@ -181,7 +181,7 @@ for a,b in flatlist:
 #print("^^^^^^^^^TOP GENE BY NUMBER OF LINKS TO OTHER GENE^^^^^^^^^^^^^^")
 
 #sum of values within values of a nested dict
-#Big O: O(n * n + 1 + 1) ~ O(n^2)
+#Big O: O(n * n + 1 + 1) ~ O(n^2) - the double for loop is n*n and the get and max functions act as constants
 def find_max_articles(PPIdict):
 	most_articles = {}
 	for prikey, seckey in PPIdict.items():
