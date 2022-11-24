@@ -105,7 +105,6 @@ for line in pubmedlist:
 		line = line.strip().split('\t')
 		pubmedtmp.append(line[1:])
 
-pubmedlist.close()
 
 #Convert the list into a dict, with pubmedID as the key and all the genes as values
 #Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop, if/else acts as 1 operation on each line
