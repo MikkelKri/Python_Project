@@ -162,6 +162,8 @@ for j in flatlist:
 #Protein-Protein Interaction dict of dict
 PPIdict = {}
 #Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop, if/else acts as 1 operation on each line
+#This adds and increments each gene to the PPI dict with a nested dict of genes beneath it
+#Values (Scores are incremented if the item exists in the dict)
 for a,b in flatlist:
 	if a not in PPIdict:
 		PPIdict[a] = {}
