@@ -207,7 +207,7 @@ for line in infile:
         #pubmedtmp[i].clear()
         #n+=1
 geneName=dict()
-for i in range(len(pubmedtmp)-n):
+for i in range(len(pubmedtmp)):
     if pubmedtmp[i][1] in geneName:
         geneName[pubmedtmp[i][1]]+=pubmedtmp[i][2]
     if pubmedtmp[i][1] not in geneName:
