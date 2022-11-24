@@ -106,6 +106,9 @@ for line in pubmedlist:
 		pubmedtmp.append(line[1:])
 
 
+if len(pubmedtmp) == 0:
+	print("That Taxonomy ID was not found, try another.")
+	sys.exit(1)
 #Convert the list into a dict, with pubmedID as the key and all the genes as values
 #Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop, if/else acts as 1 operation on each line
 pubmedID_dict = {}
