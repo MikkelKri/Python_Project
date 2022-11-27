@@ -201,17 +201,16 @@ def find_max_articles(PPIdict):
 infile= open("gene_info", 'r')
 pubmedtmp=[]
 #filter for the tax id in the first column
+#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop
 for line in infile:
     if line.startswith(tax+"	"):
         line = line.strip().split('\t')
         pubmedtmp.append(line)
 
-#n=0
-#for i in range(len(pubmedtmp)):
-    #if len(pubmedtmp[i][0])!=len(tax):
-        #pubmedtmp[i].clear()
-        #n+=1
+#Initialize
 geneName=dict()
+#Inserting GeneID and the matching GeneName
+#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop
 for i in range(len(pubmedtmp)):
     if pubmedtmp[i][1] in geneName:
         geneName[pubmedtmp[i][1]]+=pubmedtmp[i][2]
@@ -226,9 +225,6 @@ userInput=input(str("Choose by the following: \n 1.Show network with most nodes 
 while userInput!="1" and userInput!="2":
 	userInput=input(str("Choose by the following: \n 1.Show network with most nodes \n 2.Show network with highest score \n Number 1 or 2:"))
 if userInput=="1":
-	#print('\n')
-	#print("^^^^^^^^^TOP 5 NETWORKS BY NETWORK LENGTH^^^^^^^^^^^")
-	#Prints top 5 items in sorted dict by number of connections
 	#Big O: O(n*log(n))
 	#Based on binary search and the halvings that occur as the search is refined there is a log*n relationship
 	#for the halvings, however we perform this operation n time for given the dict length. 
@@ -239,13 +235,16 @@ if userInput=="1":
 	while Top5Filter!="1" and Top5Filter!="2" and Top5Filter!="3" and Top5Filter!="4" and Top5Filter!="5" and Top5Filter!="all":
 		Top5Filter=input(str("Please try again. Type all,1,2,3,4 or 5 depending of which network you will like to see:"))
 	if Top5Filter=="all":
+		#Initialize
 		GeneID=list()
 		ConnectedGenes=list()
 		MatchingScore=list()
+		#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop. Though we are appending though list which in this case is O(1)
 		for i in range(len(mostNodes)):
 			GeneID.append(mostNodes[i][0])
 			ConnectedGenes+=list(mostNodes[i][1].keys())
 			MatchingScore+=list(mostNodes[i][1].values())
+		#Big O: O(n*n) ~ O(n^2) - A doubble for loop where run time scales quadratically with n.
 		n=0
 		print("Edge\tScore")
 		for i in range(len(GeneID)):
@@ -260,6 +259,7 @@ if userInput=="1":
 		valueList=list(ConnectedGenes.values())
 		#THE GENE WITH MOST CONNECTION
 		value=geneName[str(SpecifyMostNodes[0])]
+		#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop.
 		print("Edge\tScore")
 		for i in range(len(keyList)):
 			print((value),"\tpp\t",geneName[str(keyList[i])],"\t",valueList[i])
@@ -287,11 +287,13 @@ elif userInput=="2":
 	#for the halvings, however we perform this operation n time for given the dict length.
 	top_gene_sorted_dict = dict(sorted(top_gene_dict.items(), key=lambda kv:len(kv[1]), reverse = True))
 	#print(top_gene_sorted_dict)
-
+	
+	#Initialize
 	keyList=list(top_gene_sorted_dict.keys())
 	valueList=list(top_gene_sorted_dict.values())
 	GeneID=list()
 	GeneScore=list()
+	#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop.
 	for i in range(len(valueList)):
 		GeneID+=list((valueList[i][0].keys()))
 		GeneScore+=list((valueList[i][0].values()))
@@ -302,6 +304,7 @@ elif userInput=="2":
 
 	if userInput=="1":
 		n=0
+		#Big O: O(n*n) ~ O(n^2) - A doubble for loop where run time scales quadratically with n.
 		print("Edge\tScore")
 		for i in range(len(valueList)):
 			for char in range(n,(len(valueList[i][0].keys())+n)):
@@ -310,6 +313,7 @@ elif userInput=="2":
 	else:
 		n=0
 		print("Edge\tScore")
+		#Big O: O(n*n) ~ O(n^2) - A doubble for loop where run time scales quadratically with n.
 		for i in range(len(valueList)):
 			for char in range(n,(len(valueList[i][0].keys())+n)):
 				if keyList[i]==top_gene:
