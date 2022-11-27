@@ -217,7 +217,8 @@ for i in range(len(pubmedtmp)):
     if pubmedtmp[i][1] not in geneName:
         geneName[pubmedtmp[i][1]]=pubmedtmp[i][2]
 
-
+NetworkFile=open('GeneNetwork.sif', 'w')
+EdgeFile=open('GeneEdge.txt', 'w')
 #USER INPUT:
 print("That's perfect! The database have been filtered for taxID:",tax)
 print("Further filtration needs to be done for Cytoscape to handle the network")
@@ -246,10 +247,13 @@ if userInput=="1":
 			MatchingScore+=list(mostNodes[i][1].values())
 		#Big O: O(n*n) ~ O(n^2) - A doubble for loop where run time scales quadratically with n.
 		n=0
-		print("Edge\tScore")
+		#print("Edge\tScore")
+		EdgeFile.write("Edge\tScore\n")
 		for i in range(len(GeneID)):
 			for char in range(n,(len(mostNodes[i][1].keys())+n)):
-				print(geneName[str(GeneID[i])],"\tpp\t",geneName[str(ConnectedGenes[char])],"\t",MatchingScore[char])
+				#print(geneName[str(GeneID[i])],"\tpp\t",geneName[str(ConnectedGenes[char])],"\t",MatchingScore[char])
+				NetworkFile.write("{}\t(pp)\t{}\n".format(geneName[str(GeneID[i])],geneName[str(ConnectedGenes[char])]))
+				EdgeFile.write("{}\t(pp)\t{}\t{}\n".format(geneName[str(GeneID[i])],geneName[str(ConnectedGenes[char])],MatchingScore[char]))
 			n+=len(mostNodes[i][1].keys())
 
 	else:
@@ -260,9 +264,12 @@ if userInput=="1":
 		#THE GENE WITH MOST CONNECTION
 		value=geneName[str(SpecifyMostNodes[0])]
 		#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop.
-		print("Edge\tScore")
+		#print("Edge\tScore")
+		EdgeFile.write("Edge\tScore\n")
 		for i in range(len(keyList)):
-			print((value),"\tpp\t",geneName[str(keyList[i])],"\t",valueList[i])
+			#print((value),"\tpp\t",geneName[str(keyList[i])],"\t",valueList[i])
+			NetworkFile.write("{} (pp) {}\n".format(value,geneName[str(keyList[i])]))
+			EdgeFile.write("{} (pp) {}\t{}\n".format(value,geneName[str(keyList[i])],valueList[i]))
 			
 elif userInput=="2":
 	list1=list()
@@ -305,21 +312,29 @@ elif userInput=="2":
 	if userInput=="1":
 		n=0
 		#Big O: O(n*n) ~ O(n^2) - A doubble for loop where run time scales quadratically with n.
-		print("Edge\tScore")
+		#print("Edge\tScore")
+		EdgeFile.write("Edge\tScore\n")
 		for i in range(len(valueList)):
 			for char in range(n,(len(valueList[i][0].keys())+n)):
-				print(geneName[str(keyList[i])],"\tpp\t",geneName[str(GeneID[char])],"\t",GeneScore[char])
+				#print(geneName[str(keyList[i])],"\tpp\t",geneName[str(GeneID[char])],"\t",GeneScore[char])
+				NetworkFile.write("{}\tpp\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])]))
+				EdgeFile.write("{}\tpp\t{}\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])],GeneScore[char]))
 			n+=len(valueList[i][0].keys())
 	else:
 		n=0
-		print("Edge\tScore")
+		#print("Edge\tScore")
+		EdgeFile.write("Edge\tScore\n")
 		#Big O: O(n*n) ~ O(n^2) - A doubble for loop where run time scales quadratically with n.
 		for i in range(len(valueList)):
 			for char in range(n,(len(valueList[i][0].keys())+n)):
 				if keyList[i]==top_gene:
-					print(geneName[str(keyList[i])],"\tpp\t",geneName[str(GeneID[char])],"\t",GeneScore[char])
+					NetworkFile.write("{}\tpp\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])]))
+					EdgeFile.write("{}\tpp\t{}\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])],GeneScore[char]))
+					#print(geneName[str(keyList[i])],"\tpp\t",geneName[str(GeneID[char])],"\t",GeneScore[char])
 				elif GeneID[char]==top_gene:
-					print(geneName[str(keyList[i])],"\tpp\t",geneName[str(GeneID[char])],"\t",GeneScore[char])
+					NetworkFile.write("{}\tpp\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])]))
+					EdgeFile.write("{}\tpp\t{}\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])],GeneScore[char]))
+					#print(geneName[str(keyList[i])],"\tpp\t",geneName[str(GeneID[char])],"\t",GeneScore[char])
 			n+=len(valueList[i][0].keys())
 
 
