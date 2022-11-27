@@ -75,6 +75,7 @@
 
 import sys
 
+#See the TaxID
 try:
 	tax = str(sys.argv[1])
 	print("The taxonomy id you have entered is: ", tax)
@@ -156,8 +157,6 @@ for j in flatlist:
 		tuple_dict[j] += 1
 	else:
 		tuple_dict[j] = 1	
-#print(tuple_dict)
-
 
 #Protein-Protein Interaction dict of dict
 PPIdict = {}
@@ -180,10 +179,6 @@ for a,b in flatlist:
 		PPIdict[a][b] = 1
 		PPIdict[b][a] = 1
 
-#print(PPIdict)
-
-#print('\n')
-#print("^^^^^^^^^TOP GENE BY NUMBER OF LINKS TO OTHER GENE^^^^^^^^^^^^^^")
 
 #sum of values within values of a nested dict
 #Big O: O(n * n + 1 + 1) ~ O(n^2) - the double for loop is n*n and the get and max functions act as constants
@@ -194,8 +189,7 @@ def find_max_articles(PPIdict):
 			most_articles[key] = most_articles.get(key,0) + article_count
 	highest_score = max(most_articles, key=most_articles.get)
 	return highest_score, most_articles[highest_score]
-    
-#print(find_max_articles(PPIdict)[0])
+
 
 #FILTRATION OF GENE
 infile= open("gene_info", 'r')
@@ -217,6 +211,7 @@ for i in range(len(pubmedtmp)):
     if pubmedtmp[i][1] not in geneName:
         geneName[pubmedtmp[i][1]]=pubmedtmp[i][2]
 
+#User input and creating the output file
 NetworkFile=open('GeneNetwork.sif', 'w')
 EdgeFile=open('GeneEdge.txt', 'w')
 #USER INPUT:
@@ -240,6 +235,7 @@ if userInput=="1":
 		GeneID=list()
 		ConnectedGenes=list()
 		MatchingScore=list()
+		#Appending genes, matching genes and confidence score into three seperates list
 		#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop. Though we are appending though list which in this case is O(1)
 		for i in range(len(mostNodes)):
 			GeneID.append(mostNodes[i][0])
@@ -247,16 +243,17 @@ if userInput=="1":
 			MatchingScore+=list(mostNodes[i][1].values())
 		#Big O: O(n*n) ~ O(n^2) - A doubble for loop where run time scales quadratically with n.
 		n=0
-		#print("Edge\tScore")
+		#Outfile writen
 		EdgeFile.write("Edge\tScore\n")
+		#Making a double for loop for first looping through a gene and then other loop for looping through all matching genes.
 		for i in range(len(GeneID)):
 			for char in range(n,(len(mostNodes[i][1].keys())+n)):
-				#print(geneName[str(GeneID[i])],"\tpp\t",geneName[str(ConnectedGenes[char])],"\t",MatchingScore[char])
-				NetworkFile.write("{}\t(pp)\t{}\n".format(geneName[str(GeneID[i])],geneName[str(ConnectedGenes[char])]))
-				EdgeFile.write("{}\t(pp)\t{}\t{}\n".format(geneName[str(GeneID[i])],geneName[str(ConnectedGenes[char])],MatchingScore[char]))
+				NetworkFile.write("{} (pp) {}\n".format(geneName[str(GeneID[i])],geneName[str(ConnectedGenes[char])]))
+				EdgeFile.write("{} (pp) {}\t{}\n".format(geneName[str(GeneID[i])],geneName[str(ConnectedGenes[char])],MatchingScore[char]))
 			n+=len(mostNodes[i][1].keys())
 
 	else:
+		#Initialize
 		SpecifyMostNodes=mostNodes[int(Top5Filter)-1]
 		ConnectedGenes=SpecifyMostNodes[1]
 		keyList=list(ConnectedGenes.keys())
@@ -264,18 +261,17 @@ if userInput=="1":
 		#THE GENE WITH MOST CONNECTION
 		value=geneName[str(SpecifyMostNodes[0])]
 		#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop.
-		#print("Edge\tScore")
 		EdgeFile.write("Edge\tScore\n")
+		#Making one for loop for having the chosen gene and looping through list with connected genes
 		for i in range(len(keyList)):
-			#print((value),"\tpp\t",geneName[str(keyList[i])],"\t",valueList[i])
 			NetworkFile.write("{} (pp) {}\n".format(value,geneName[str(keyList[i])]))
 			EdgeFile.write("{} (pp) {}\t{}\n".format(value,geneName[str(keyList[i])],valueList[i]))
 			
 elif userInput=="2":
+	#Initialize
 	list1=list()
 	#CODE FOR FILTER
 	top_gene = find_max_articles(PPIdict)[0]
-	#print(tuple_dict[top_gene])
 	#Big O: O(n+1) ~ O(n)
 	lst1 = [v for (k1, _), v in tuple_dict.items() if k1 == top_gene]
 	#Big O: O(n+1) ~ O(n)
@@ -288,12 +284,11 @@ elif userInput=="2":
 	for k,v in PPIdict.items():
 		if k in keys or k == top_gene:
 			top_gene_dict[k] = [v]
-	#print(top_gene_dict)
+			
 	#Big O: O(n*log(n))
 	#Based on binary search and the halvings that occur as the search is refined there is a log*n relationship
 	#for the halvings, however we perform this operation n time for given the dict length.
 	top_gene_sorted_dict = dict(sorted(top_gene_dict.items(), key=lambda kv:len(kv[1]), reverse = True))
-	#print(top_gene_sorted_dict)
 	
 	#Initialize
 	keyList=list(top_gene_sorted_dict.keys())
@@ -301,6 +296,7 @@ elif userInput=="2":
 	GeneID=list()
 	GeneScore=list()
 	#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop.
+	#Making new list with genes and their confidence score
 	for i in range(len(valueList)):
 		GeneID+=list((valueList[i][0].keys()))
 		GeneScore+=list((valueList[i][0].values()))
@@ -312,29 +308,27 @@ elif userInput=="2":
 	if userInput=="1":
 		n=0
 		#Big O: O(n*n) ~ O(n^2) - A doubble for loop where run time scales quadratically with n.
-		#print("Edge\tScore")
 		EdgeFile.write("Edge\tScore\n")
+		#Again doing a double for loop looping through list with genes and another list with all matching genes
 		for i in range(len(valueList)):
 			for char in range(n,(len(valueList[i][0].keys())+n)):
-				#print(geneName[str(keyList[i])],"\tpp\t",geneName[str(GeneID[char])],"\t",GeneScore[char])
-				NetworkFile.write("{}\tpp\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])]))
-				EdgeFile.write("{}\tpp\t{}\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])],GeneScore[char]))
+				NetworkFile.write("{} (pp) {}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])]))
+				EdgeFile.write("{} (pp) {}\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])],GeneScore[char]))
 			n+=len(valueList[i][0].keys())
 	else:
 		n=0
-		#print("Edge\tScore")
 		EdgeFile.write("Edge\tScore\n")
 		#Big O: O(n*n) ~ O(n^2) - A doubble for loop where run time scales quadratically with n.
+		#Doing a double for loop looping through list with genes and another list with all matching genes.
+		#Different is that the outfile only writes if the top gene matches on gene in the lists
 		for i in range(len(valueList)):
 			for char in range(n,(len(valueList[i][0].keys())+n)):
 				if keyList[i]==top_gene:
-					NetworkFile.write("{}\tpp\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])]))
-					EdgeFile.write("{}\tpp\t{}\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])],GeneScore[char]))
-					#print(geneName[str(keyList[i])],"\tpp\t",geneName[str(GeneID[char])],"\t",GeneScore[char])
+					NetworkFile.write("{} (pp) {}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])]))
+					EdgeFile.write("{} (pp) {}\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])],GeneScore[char]))
 				elif GeneID[char]==top_gene:
-					NetworkFile.write("{}\tpp\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])]))
-					EdgeFile.write("{}\tpp\t{}\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])],GeneScore[char]))
-					#print(geneName[str(keyList[i])],"\tpp\t",geneName[str(GeneID[char])],"\t",GeneScore[char])
+					NetworkFile.write("{} (pp) {}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])]))
+					EdgeFile.write("{} (pp) {}\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])],GeneScore[char]))
 			n+=len(valueList[i][0].keys())
 
 
