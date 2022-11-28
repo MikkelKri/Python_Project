@@ -154,6 +154,7 @@ flatlist = [no for row in pairlist for no in row]
 
 #This makes a dict of tuples and counts of article links - it's good for quickly seeing which PPI have the most links
 #Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop, if/else acts as 1 operation on each line
+#Code from class slides SetsDicts slide 10
 tuple_dict = {}
 for j in flatlist:
 	if j in tuple_dict:
