@@ -17,6 +17,7 @@
 	#Reduce the size of this dict by deleting all key/value pairs with only one value
 	
 #The central algorithm then iterates through each key/value pair and creates all unique combinations of values
+	#inspiration for this code came from https://stackoverflow.com/questions/5360220/how-to-split-a-list-into-pairs-in-all-possible-ways
 	#for each value in each key/value dict group return a tuple where the first item is the "i'th" item in the 
 	#value set and the second item is the "i+1'th" item in the value set. By iterating 
 	#through the whole value set in this ordered fashion we will create all combinations of unique 
