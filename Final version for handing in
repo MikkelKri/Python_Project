@@ -105,7 +105,7 @@ for line in pubmedlist:
 	if line.startswith(tax + "	"):
 		line = line.strip().split('\t')
 		pubmedtmp.append(line[1:])
-
+infile.close()
 
 if len(pubmedtmp) == 0:
 	print("That Taxonomy ID was not found, try another.")
@@ -200,23 +200,23 @@ def find_max_articles(PPIdict):
 infile= open("gene_info", 'r')
 pubmedtmp=[]
 #filter for the tax id in the first column
+#Inspiration was taken from slides/lecture 8 "Regex"
 #Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop
 for line in infile:
     if line.startswith(tax+"	"):
         line = line.strip().split('\t')
         pubmedtmp.append(line)
+infile.close()
 
 #Initialize
 geneName=dict()
 #Inserting GeneID and the matching GeneName
+#Inspiration was taken from slides/lecture 12 "Data structures"
 #Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop
 for i in range(len(pubmedtmp)):
-    if pubmedtmp[i][1] in geneName:
-        geneName[pubmedtmp[i][1]]+=pubmedtmp[i][2]
-    if pubmedtmp[i][1] not in geneName:
-        geneName[pubmedtmp[i][1]]=pubmedtmp[i][2]
+	geneName[pubmedtmp[i][1]]=pubmedtmp[i][2]
 
-#User input and creating the output file
+#User input and creating the output file. Inspiration from slide/lecture4 "IO"
 NetworkFile=open('GeneNetwork.sif', 'w')
 EdgeFile=open('GeneEdge.txt', 'w')
 #USER INPUT:
@@ -241,16 +241,19 @@ if userInput=="1":
 		ConnectedGenes=list()
 		MatchingScore=list()
 		#Appending genes, matching genes and confidence score into three seperates list
+		#Inspiration taking from slide/lecture 9 "SetsDicts"
 		#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop. Though we are appending though list which in this case is O(1)
 		for i in range(len(mostNodes)):
 			GeneID.append(mostNodes[i][0])
 			ConnectedGenes+=list(mostNodes[i][1].keys())
 			MatchingScore+=list(mostNodes[i][1].values())
-		#Big O: O(n*n) ~ O(n^2) - A doubble for loop where run time scales quadratically with n.
 		n=0
-		#Outfile writen
+		#Outfile writen. Inspiration from slide/lecture4 "IO"
 		EdgeFile.write("Edge\tScore\n")
+		#Big O: O(n*n) ~ O(n^2) - A doubble for loop where run time scales quadratically with n.
 		#Making a double for loop for first looping through a gene and then other loop for looping through all matching genes.
+		#In range of len from previous number of genes to the len of the current gene numbers of matching genes
+		#Inspiration from slide/lecture5 "Exceptions" and slide/lecture 9 "SetsDicts"
 		for i in range(len(GeneID)):
 			for char in range(n,(len(mostNodes[i][1].keys())+n)):
 				NetworkFile.write("{} (pp) {}\n".format(geneName[str(GeneID[i])],geneName[str(ConnectedGenes[char])]))
@@ -259,15 +262,18 @@ if userInput=="1":
 
 	else:
 		#Initialize
+		#-1 since in coding we start from pos 0. So if they want to see pos 5, that is pos 4 in coding language.
+		#Inspiration taking from slide/lecture 9 "SetsDicts"
 		SpecifyMostNodes=mostNodes[int(Top5Filter)-1]
 		ConnectedGenes=SpecifyMostNodes[1]
 		keyList=list(ConnectedGenes.keys())
 		valueList=list(ConnectedGenes.values())
 		#THE GENE WITH MOST CONNECTION
 		value=geneName[str(SpecifyMostNodes[0])]
-		#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop.
 		EdgeFile.write("Edge\tScore\n")
+		#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop.
 		#Making one for loop for having the chosen gene and looping through list with connected genes
+		#Inspiration from slide/lecture5 "Exceptions" and slide/lecture 9 "SetsDicts"
 		for i in range(len(keyList)):
 			NetworkFile.write("{} (pp) {}\n".format(value,geneName[str(keyList[i])]))
 			EdgeFile.write("{} (pp) {}\t{}\n".format(value,geneName[str(keyList[i])],valueList[i]))
@@ -275,15 +281,17 @@ if userInput=="1":
 elif userInput=="2":
 	#Initialize
 	list1=list()
-	#CODE FOR FILTER
+	#CODE FOR FILTER. Finding all networks of the top gene and its connected genes. 
 	top_gene = find_max_articles(PPIdict)[0]
+	#We obtain two list. One list where the top gene is the "center" in the network and one where it's just conencted to one other gene.
 	#Big O: O(n+1) ~ O(n)
 	#Code from https://stackoverflow.com/questions/46454200/search-in-dict-for-a-tuple-as-a-key-with-unknown-part
 	lst1 = [v for (k1, _), v in tuple_dict.items() if k1 == top_gene]
 	#Big O: O(n+1) ~ O(n)
 	#code from https://stackoverflow.com/questions/46454200/search-in-dict-for-a-tuple-as-a-key-with-unknown-part
 	lst2 = [v for (_, k2), v in tuple_dict.items() if k2 == top_gene]
-
+	
+	#Those list gets to a large dict containg all networks with the top gene
 	top_gene_dict = {}
 	#Big O: O(n+1) ~ O(n)
 	keys = [x for x, y in PPIdict.items() if top_gene in y]
@@ -303,7 +311,7 @@ elif userInput=="2":
 	GeneID=list()
 	GeneScore=list()
 	#Big O: O(n+1) ~ O(n) - Run time scales linearly based on for loop.
-	#Making new list with genes and their confidence score
+	#Making new list with genes and their confidence score. Inspiration from slide/lecture 9 "SetsDicts"
 	for i in range(len(valueList)):
 		GeneID+=list((valueList[i][0].keys()))
 		GeneScore+=list((valueList[i][0].values()))
@@ -316,7 +324,9 @@ elif userInput=="2":
 		n=0
 		#Big O: O(n*n) ~ O(n^2) - A doubble for loop where run time scales quadratically with n.
 		EdgeFile.write("Edge\tScore\n")
-		#Again doing a double for loop looping through list with genes and another list with all matching genes
+		#Again doing a double for loop looping through list with genes and another list with all matching genes in range length
+		#of previous connected genes to length of current connected genes
+		#Inspiration from slide/lecture5 "Exceptions" and slide/lecture 9 "SetsDicts"
 		for i in range(len(valueList)):
 			for char in range(n,(len(valueList[i][0].keys())+n)):
 				NetworkFile.write("{} (pp) {}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])]))
@@ -328,6 +338,7 @@ elif userInput=="2":
 		#Big O: O(n*n) ~ O(n^2) - A doubble for loop where run time scales quadratically with n.
 		#Doing a double for loop looping through list with genes and another list with all matching genes.
 		#Different is that the outfile only writes if the top gene matches on gene in the lists
+		#Inspiration from slide/lecture5 "Exceptions" and slide/lecture 9 "SetsDicts"
 		for i in range(len(valueList)):
 			for char in range(n,(len(valueList[i][0].keys())+n)):
 				if keyList[i]==top_gene:
@@ -337,7 +348,8 @@ elif userInput=="2":
 					NetworkFile.write("{} (pp) {}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])]))
 					EdgeFile.write("{} (pp) {}\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])],GeneScore[char]))
 			n+=len(valueList[i][0].keys())
-
+outfile.close()
+outfile.close()
 
 
 
