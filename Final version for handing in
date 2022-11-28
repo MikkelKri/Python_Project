@@ -105,7 +105,7 @@ for line in pubmedlist:
 	if line.startswith(tax + "	"):
 		line = line.strip().split('\t')
 		pubmedtmp.append(line[1:])
-infile.close()
+pubmedlist.close()
 
 if len(pubmedtmp) == 0:
 	print("That Taxonomy ID was not found, try another.")
@@ -349,8 +349,8 @@ elif userInput=="2":
 					NetworkFile.write("{} (pp) {}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])]))
 					EdgeFile.write("{} (pp) {}\t{}\n".format(geneName[str(keyList[i])],geneName[str(GeneID[char])],GeneScore[char]))
 			n+=len(valueList[i][0].keys())
-outfile.close()
-outfile.close()
+NetworkFile.close()
+EdgeFile.close()
 
 
 
