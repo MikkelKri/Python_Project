@@ -185,6 +185,7 @@ for a,b in flatlist:
 
 #sum of values within values of a nested dict
 #Big O: O(n * n + 1 + 1) ~ O(n^2) - the double for loop is n*n and the get and max functions act as constants
+#Inspiration for this was taken from here: https://stackoverflow.com/questions/39000681/find-the-sum-of-values-within-the-values-of-a-nested-dictionary
 def find_max_articles(PPIdict):
 	most_articles = {}
 	for prikey, seckey in PPIdict.items():
