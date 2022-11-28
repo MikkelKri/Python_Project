@@ -138,6 +138,7 @@ pairlist = []
 
 #for each value in each key/value dict group return a tuple where the first item is the "i'th" item in the value set 
 #and the second item is the "i+1'th" item in the value set. This finds all the possible pairs of genes linked by articles
+#Inspiration for this code can be found here: https://stackoverflow.com/questions/5360220/how-to-split-a-list-into-pairs-in-all-possible-ways
 for kvpair in pubmedID_dict.items():
 	pre = ([(kvpair[1][a], kvpair[1][b]) for a in range(len(kvpair[1])) for b in range(a+1, len(kvpair[1]))])
 	pairlist.append([tuple(k) for k in pre])
@@ -146,6 +147,7 @@ for kvpair in pubmedID_dict.items():
 
 #This converts the list of lists into a flat list of tuples
 #Big O: O(n*n) ~ O(n^2) - Run time scales quadratically with n - evident by the double for loop
+#This code came from the class slides on Comprehension and Generators, slide 3
 flatlist = [no for row in pairlist for no in row]
 
 
