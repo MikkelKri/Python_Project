@@ -230,6 +230,7 @@ if userInput=="1":
 	#Based on binary search and the halvings that occur as the search is refined there is a log*n relationship
 	#for the halvings, however we perform this operation n time for given the dict length. 
 	#Prints top 5 items in sorted dict by number of connections
+	#inspiration from https://stackoverflow.com/questions/4110665/sort-nested-dictionary-by-value-and-remainder-by-another-value-in-python
 	sorted_dict = dict(sorted(PPIdict.items(), key=lambda kv:len(kv[1]), reverse = True))
 	mostNodes=list(sorted_dict.items())[0:5]
 	Top5Filter=input(str("We filtered the top 5 networks for you. Do you want to see all of the networks or one from 1 to 5:"))
