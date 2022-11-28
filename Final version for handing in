@@ -277,8 +277,10 @@ elif userInput=="2":
 	#CODE FOR FILTER
 	top_gene = find_max_articles(PPIdict)[0]
 	#Big O: O(n+1) ~ O(n)
+	#Code from https://stackoverflow.com/questions/46454200/search-in-dict-for-a-tuple-as-a-key-with-unknown-part
 	lst1 = [v for (k1, _), v in tuple_dict.items() if k1 == top_gene]
 	#Big O: O(n+1) ~ O(n)
+	#code from https://stackoverflow.com/questions/46454200/search-in-dict-for-a-tuple-as-a-key-with-unknown-part
 	lst2 = [v for (_, k2), v in tuple_dict.items() if k2 == top_gene]
 
 	top_gene_dict = {}
